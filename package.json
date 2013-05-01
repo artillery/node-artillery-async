@@ -1,0 +1,22 @@
+{
+  "author": {
+    "name": "Ian Langworth",
+    "email": "ian@artillery.com",
+    "url": "https://artillery.com"
+  },
+  "name": "artillery-async",
+  "description": "Common patterns for asynchronous code",
+  "version": "0.1.0",
+  "main": "lib/async",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "coffee-script": "*",
+    "nodeunit": "*"
+  },
+  "scripts": {
+    "test": "nodeunit test"
+  },
+  "optionalDependencies": {
+  }
+}
