@@ -141,3 +141,51 @@ exports.testParallel =
     ], (err) ->
       test.equal err, 'Error 1'
       test.done()
+
+exports.testWhile =
+
+  testBasic: (test) ->
+    test.expect 2
+    x = 0
+    condition = (cb) ->
+      return x < 9
+    iterator = (cb) ->
+      x++
+      cb()
+    finalCallback = (err) ->
+      test.equal err, null, 'No error'
+      test.equal x, 9, 'The loop ran 10 times.'
+      test.done()
+    async.while condition, iterator, finalCallback
+
+  testError: (test) ->
+    test.expect 2
+    x = 0
+    condition = ->
+      return x < 10
+    iterator = (cb) ->
+      x++
+      if x > 3
+        cb 'Some error'
+      else
+        cb()
+    finalCallback = (err) ->
+      test.equal err, 'Some error'
+      test.equal x, 4, 'The loop ran 5 times.'
+      test.done()
+    async.while condition, iterator, finalCallback
+
+  testFalseConditionFromStart: (test) ->
+    test.expect 2
+    x = 0
+    condition = ->
+      return false
+    iterator = (cb) ->
+      x++
+      cb()
+    finalCallback = (err) ->
+      test.equal err, null, 'No error'
+      test.equal x, 0, 'The loop never ran.'
+      test.done()
+    async.while condition, iterator, finalCallback
+

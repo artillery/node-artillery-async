@@ -18,9 +18,10 @@ exports.serial = (steps, finalCallback) ->
 
     callback = (err, args...) ->
       if err?
-        return finalCallback? err
+        finalCallback? err
       else
         processNextStep args
+      return
 
     nextArgs = lastArgs.concat(callback) # (arg1, arg2, ..., cb)
     steps[index++].apply null, nextArgs
@@ -44,8 +45,26 @@ exports.parallel = (steps, finalCallback) ->
       count--
       if count == 0
         finalCallback? null
+    return
 
   for step in steps
     step barrier
 
+  return
+
+exports.while = (condition, iterator, finalCallback) ->
+  process = ->
+    if not condition()
+      finalCallback? null
+      return
+    callback = (err) ->
+      if err?
+        finalCallback? err
+      else
+        process()
+      return
+    iterator callback
+    return
+
+  process()
   return
