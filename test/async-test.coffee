@@ -13,6 +13,7 @@ exports.testSerial =
 
   # Test that serial() runs things serially.
   testBasic: (test) ->
+    test.expect 2
     result = []
     async.serial [
       (cb) ->
@@ -31,6 +32,7 @@ exports.testSerial =
 
   # Test that the serial handles an empty list and still calls the final callback.
   testEmpty: (test) ->
+    test.expect 2
     result = []
     async.serial [], (err) ->
       test.equal err, null
@@ -40,6 +42,7 @@ exports.testSerial =
 
   # Test that passing an error to the callback short-circuits.
   testError: (test) ->
+    test.expect 2
     result = []
     async.serial [
       (cb) ->
@@ -57,6 +60,7 @@ exports.testSerial =
 
   # Test passing values to each subsequent callback.
   testWaterfall: (test) ->
+    test.expect 6
     async.serial [
       (cb) ->
         cb null, 11
@@ -75,6 +79,7 @@ exports.testSerial =
 
   # Test that an error while passing values doesn't pass a value.
   testWaterfallError: (test) ->
+    test.expect 3
     async.serial [
       (cb) ->
         cb null, 111
@@ -88,3 +93,51 @@ exports.testSerial =
       test.equal value, undefined
       test.done()
 
+exports.testParallel =
+
+  # Test that everything gets called.
+  testBasic: (test) ->
+    test.expect 1
+    result = {}
+    async.parallel [
+      (cb) ->
+        result[1] = true
+        cb()
+      (cb) ->
+        result[2] = true
+        cb()
+      (cb) ->
+        result[3] = true
+        cb()
+    ], (err) ->
+      test.equal err, null, 'No error'
+      test.done()
+
+  # Test that the finall callback gets called with an empty list.
+  testEmpty: (test) ->
+    test.expect 1
+    async.parallel [], (err) ->
+      test.equal err, null, 'No error'
+      test.done()
+
+  # Test a single error calls the final callback.
+  testSingleError: (test) ->
+    test.expect 1
+    async.parallel [
+      (cb) ->
+        cb 'Some error'
+    ], (err) ->
+      test.equal err, 'Some error'
+      test.done()
+
+  # Test that only one error triggers the final callback.
+  testMultipleError: (test) ->
+    test.expect 1
+    async.parallel [
+      (cb) ->
+        cb 'Error 1'
+      (cb) ->
+        cb 'Error 2' # This error is lost.
+    ], (err) ->
+      test.equal err, 'Error 1'
+      test.done()

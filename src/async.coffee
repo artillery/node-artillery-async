@@ -18,7 +18,7 @@ exports.serial = (steps, finalCallback) ->
 
     callback = (err, args...) ->
       if err?
-        return finalCallback?(err)
+        return finalCallback? err
       else
         processNextStep args
 
@@ -27,4 +27,25 @@ exports.serial = (steps, finalCallback) ->
     return
 
   processNextStep()
+  return
+
+exports.parallel = (steps, finalCallback) ->
+  if steps.length == 0
+    finalCallback? null
+    return
+
+  errors = []
+  count = steps.length
+  barrier = (err) ->
+    if err? and count >= 0
+      count = -1
+      finalCallback? err
+    else
+      count--
+      if count == 0
+        finalCallback? null
+
+  for step in steps
+    step barrier
+
   return
