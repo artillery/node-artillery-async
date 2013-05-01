@@ -10,14 +10,21 @@
 exports.serial = (steps, finalCallback) ->
   index = 0
 
-  processNextStep = ->
+  processNextStep = (lastArgs = []) ->
     if not steps[index]?
-      return finalCallback?(null)
+      finalArgs = [null].concat(lastArgs) # (err, arg1, arg2, ...)
+      finalCallback?.apply null, finalArgs
+      return
 
-    steps[index++] (err) ->
+    callback = (err, args...) ->
       if err?
         return finalCallback?(err)
       else
-        processNextStep()
+        processNextStep args
+
+    nextArgs = lastArgs.concat(callback) # (arg1, arg2, ..., cb)
+    steps[index++].apply null, nextArgs
+    return
 
   processNextStep()
+  return
