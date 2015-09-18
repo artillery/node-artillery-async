@@ -1,22 +1,24 @@
 {
-  "author": {
-    "name": "Ian Langworth",
-    "email": "ian@artillery.com",
-    "url": "https://artillery.com"
-  },
   "name": "artillery-async",
   "description": "Common patterns for asynchronous code",
-  "version": "0.1.0",
-  "main": "lib/async",
-  "dependencies": {
+  "version": "1.0.0",
+  "homepage": "https://github.com/artillery/node-artillery-async",
+  "bugs": "https://github.com/artillery/node-artillery-async/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/artillery/node-artillery-async.git"
   },
+  "license": "MIT",
+  "author": "Ian Langworth <ian@artillery.com> (https://www.artillery.com/)",
+  "main": "lib/index.js",
+  "dependencies": {},
   "devDependencies": {
     "coffee-script": "*",
     "nodeunit": "*"
   },
   "scripts": {
+    "build": "coffee --compile --output lib src/index.coffee",
+    "watch": "coffee --watch --compile --output lib index.coffee",
     "test": "nodeunit test"
-  },
-  "optionalDependencies": {
   }
 }

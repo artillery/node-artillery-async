@@ -1,21 +1,14 @@
 #!/usr/bin/env coffee
-#
-# Copyright 2013 Artillery Games, Inc. All rights reserved.
-#
-# This code, and all derivative work, is the exclusive property of Artillery
-# Games, Inc. and may not be used without Artillery Games, Inc.'s authorization
-#
-# Author: Ian Langworth
 
-async = require '../lib/async'
+async = require '../lib/index'
 
-exports.testSerial =
+exports.testSeries =
 
-  # Test that serial() runs things serially.
+  # Test that series() runs things serially.
   testBasic: (test) ->
     test.expect 2
     result = []
-    async.serial [
+    async.series [
       (cb) ->
         result.push 'A'
         cb()
@@ -30,11 +23,11 @@ exports.testSerial =
       test.deepEqual result, ['A', 'B', 'C']
       test.done()
 
-  # Test that the serial handles an empty list and still calls the final callback.
+  # Test that the series handles an empty list and still calls the final callback.
   testEmpty: (test) ->
     test.expect 2
     result = []
-    async.serial [], (err) ->
+    async.series [], (err) ->
       test.equal err, null
       test.deepEqual result, []
       test.done()
@@ -44,7 +37,7 @@ exports.testSerial =
   testError: (test) ->
     test.expect 2
     result = []
-    async.serial [
+    async.series [
       (cb) ->
         result.push 'A'
         cb()
@@ -61,7 +54,7 @@ exports.testSerial =
   # Test passing values to each subsequent callback.
   testWaterfall: (test) ->
     test.expect 6
-    async.serial [
+    async.series [
       (cb) ->
         cb null, 11
       (x, cb) ->
@@ -80,7 +73,7 @@ exports.testSerial =
   # Test that an error while passing values doesn't pass a value.
   testWaterfallError: (test) ->
     test.expect 3
-    async.serial [
+    async.series [
       (cb) ->
         cb null, 111
       (value, cb) ->
