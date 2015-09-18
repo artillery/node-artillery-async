@@ -2,6 +2,25 @@
 
 async = require '../lib/index'
 
+defer = (fn) -> setTimeout fn, 0 # setImmediate not in Node v0.8
+
+exports.testBarrier =
+
+  # Test that a basic barrier works.
+  testBasic: (test) ->
+    test.expect 0
+    barrier = async.barrier 3, ->
+      test.done()
+    defer barrier
+    defer barrier
+    defer barrier
+
+  # Test that a barrier of size 0 works.
+  testBarrierZero: (test) ->
+    test.expect 0
+    barrier = async.barrier 0, ->
+      test.done()
+
 exports.testSeries =
 
   # Test that series() runs things serially.
@@ -31,7 +50,6 @@ exports.testSeries =
       test.equal err, null
       test.deepEqual result, []
       test.done()
-
 
   # Test that passing an error to the callback short-circuits.
   testError: (test) ->
@@ -181,4 +199,155 @@ exports.testWhile =
       test.equal x, 0, 'The loop never ran.'
       test.done()
     async.while condition, iterator, finalCallback
+
+exports.testForEachSeries =
+
+  # Test that a simple foreach works.
+  testBasic: (test) ->
+    test.expect 2
+    array = [1,2,3]
+    newArray = []
+    iterator = (x, cb) ->
+      newArray.push x * 2
+      cb()
+    finalCallback = (err) ->
+      test.equal err, null, 'No error'
+      test.deepEqual [2, 4, 6], newArray
+      test.done()
+    async.forEachSeries array, iterator, finalCallback
+
+  # Same as above but asynchronous.
+  testBasicAsync: (test) ->
+    test.expect 2
+    array = [1,2,3]
+    newArray = []
+    iterator = (x, cb) ->
+      newArray.push x * 2
+      defer -> cb()
+    finalCallback = (err) ->
+      test.equal err, null, 'No error'
+      test.deepEqual [2, 4, 6], newArray
+      test.done()
+    async.forEachSeries array, iterator, finalCallback
+
+  # Test that an error stops the foreach and propagates.
+  testError: (test) ->
+    test.expect 2
+    array = [1,2,3]
+    newArray = []
+    iterator = (x, cb) ->
+      if x == 2
+        cb '2 is unsupported'
+      else
+        newArray.push x * 2
+        cb()
+    finalCallback = (err) ->
+      test.equal err, '2 is unsupported'
+      test.deepEqual [2], newArray
+      test.done()
+    async.forEachSeries array, iterator, finalCallback
+
+  # Same as above but asynchronous.
+  testErrorAsync: (test) ->
+    test.expect 2
+    array = [1,2,3]
+    newArray = []
+    iterator = (x, cb) ->
+      if x == 2
+        defer -> cb '2 is unsupported'
+      else
+        newArray.push x * 2
+        defer -> cb()
+    finalCallback = (err) ->
+      test.equal err, '2 is unsupported'
+      test.deepEqual [2], newArray
+      test.done()
+    async.forEachSeries array, iterator, finalCallback
+
+  # Test that an empty array never runs the loop.
+  testEmptyArray: (test) ->
+    test.expect 2
+    array = []
+    newArray = []
+    iterator = (x, cb) ->
+      newArray.push x * 2
+      cb()
+    finalCallback = (err) ->
+      test.equal err, null
+      test.deepEqual [], newArray
+      test.done()
+    async.forEachSeries array, iterator, finalCallback
+
+exports.testForEachParallel =
+
+  # Test that some tests happen in parallel.
+  testBasic: (test) ->
+    test.expect 1
+    inFlight = 0
+    iterator = (x, cb) ->
+      inFlight++
+      check = ->
+        if inFlight == 3
+          defer cb
+        else
+          defer check
+      defer check
+    finalCallback = (err) ->
+      test.equal err, null
+      test.done()
+    async.forEachParallel ['a', 'b', 'c'], iterator, finalCallback
+
+  # Test that the forEachParallel handles an empty list and still calls the final callback.
+  testEmpty: (test) ->
+    test.expect 2
+    result = []
+    iterator = (x, cb) ->
+      result.push x
+      cb()
+    finalCallback = (err) ->
+      test.equal err, null
+      test.deepEqual result, []
+      test.done()
+    async.forEachParallel [], iterator, finalCallback
+
+  # Test that forEachParallel collects errors and returns them.
+  testError: (test) ->
+    iterator = (x, cb) ->
+      if x in [2, 7]
+        cb "error #{ x }"
+      else
+        cb()
+    finalCallback = (err) ->
+      err.sort()
+      test.deepEqual err, ['error 2', 'error 7']
+      test.done()
+    async.forEachParallel [1..10], iterator, finalCallback
+
+  # Test that only N tasks are run at once.
+  testLimit: (test) ->
+    LIMIT = 1
+    test.expect 3
+    maxInFlight = 0
+    currentInFlight = 0
+    result = []
+    iterator = (x, cb) ->
+      currentInFlight++
+      maxInFlight = currentInFlight if currentInFlight > maxInFlight
+      tries = 0
+      check = ->
+        tries++
+        if tries > 42
+          currentInFlight--
+          result.push x
+          defer cb
+        else
+          defer check
+      defer check
+    finalCallback = (err) ->
+      result.sort()
+      test.equal maxInFlight, LIMIT
+      test.deepEqual result, [1..9]
+      test.equal err, null
+      test.done()
+    async.forEachParallel [1..9], iterator, LIMIT, finalCallback
 

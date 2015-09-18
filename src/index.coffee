@@ -1,5 +1,11 @@
 #!/usr/bin/env coffee
 
+exports.barrier = (count, finalCallback) ->
+  return finalCallback() if count == 0
+  return ->
+    count--
+    finalCallback() if count == 0
+
 exports.series = (steps, finalCallback) ->
   index = 0
 
@@ -60,4 +66,40 @@ exports.while = (condition, iterator, finalCallback) ->
     return
 
   process()
+  return
+
+exports.forEachSeries = (array, iterator, finalCallback) ->
+  index = 0
+  length = array.length
+  condition = ->
+    return index < length
+  arrayIterator = (cb) ->
+    iterator array[index++], cb
+    return
+  exports.while condition, arrayIterator, finalCallback
+  return
+
+exports.forEachParallel = (array, iterator, limit, finalCallback) ->
+  if not finalCallback?
+    finalCallback = limit
+    limit = Infinity
+  return finalCallback(null) unless array.length
+
+  errors = []
+  inFlight = index = 0
+
+  done = (err) ->
+    errors.push err if err
+    inFlight--
+    if inFlight == 0 and index >= array.length
+      finalCallback(if errors.length then errors else null)
+    else
+      next()
+
+  next = ->
+    while inFlight < limit and index < array.length
+      inFlight++
+      iterator array[index++], done
+
+  next()
   return
