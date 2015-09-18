@@ -1,0 +1,24 @@
+{
+  "name": "artillery-async",
+  "version": "1.0.0",
+  "homepage": "https://github.com/artillery/node-artillery-async",
+  "authors": [
+    "Ian Langworth <ian@artillery.com>"
+  ],
+  "description": "Common patterns for asynchronous code",
+  "main": "lib/index.js",
+  "keywords": [
+    "async",
+    "callback",
+    "utility",
+    "module"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
