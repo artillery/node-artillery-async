@@ -1,6 +1,12 @@
 {
   "name": "artillery-async",
   "description": "Common patterns for asynchronous code",
+  "keywords": [
+    "async",
+    "callback",
+    "utility",
+    "module"
+  ],
   "version": "1.0.0",
   "homepage": "https://github.com/artillery/node-artillery-async",
   "bugs": "https://github.com/artillery/node-artillery-async/issues",
@@ -17,8 +23,8 @@
     "nodeunit": "*"
   },
   "scripts": {
-    "build": "coffee --compile --output lib src/index.coffee",
-    "watch": "coffee --watch --compile --output lib index.coffee",
+    "make": "coffee --compile --output lib src/index.coffee",
+    "watch": "coffee --watch --compile --output lib src/index.coffee",
     "test": "nodeunit test"
   }
 }
