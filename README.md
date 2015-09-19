@@ -13,7 +13,7 @@ Install using `npm install artillery-async`
 
 - **Async's API is difficult.** Async provides 60+ oddly-named functions with overlapping functionality. ArtilleryAsync is six functions and that's all we've needed after writing 100,000+ lines of JavaScript over four years.
 - **Async is inconsistent.** Sometimes Async calls callbacks synchronously and sometimes it doesn't. ArtilleryAsync does things synchronously when possible. Yes, this means you might overflow the call stack, but ArtilleryAsync provides the _choice_ of when to use `process.nextTick()` or `setImmediate()`.
-- **Async's implementation is unwieldily.** We had a lot of difficulty when we tried to debug async. ArtilleryAsync's implementation is only 105 lines of CoffeeScript.
+- **Async's implementation is unwieldy.** We had a lot of difficulty when we tried to debug async. ArtilleryAsync's implementation is only 105 lines of CoffeeScript.
 
 ## Contents
 
