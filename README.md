@@ -2,8 +2,12 @@
 
 [![Build Status](https://img.shields.io/circleci/project/artillery/node-artillery-async.svg)](https://circleci.com/gh/artillery/node-artillery-async)
 [![Coverage Status](https://coveralls.io/repos/artillery/node-artillery-async/badge.svg?branch=master&service=github)](https://coveralls.io/github/artillery/node-artillery-async?branch=master)
+[![License](https://img.shields.io/github/license/artillery/node-artillery-async.svg)](https://github.com/artillery/node-artillery-async/blob/master/LICENSE)
+[![Issues](https://img.shields.io/github/issues/artillery/node-artillery-async.svg)](https://github.com/artillery/node-artillery-async/issues)
 
 Common patterns for writing asynchronous code.
+
+Install using `npm install artillery-async` or `bower install artillery-async`
 
 ## Why artillery-async instead of async?
 
@@ -31,6 +35,8 @@ Returns a function that executes `callback` after being called `count` times. Th
 #### Example
 
 ```javascript
+var async = require('artillery-async');
+
 function loadDependencies(deps, cb) {
   var i, barrier = async.barrier(deps.length, cb);
   for (i = 0; i < deps.length; i++) {
@@ -55,6 +61,8 @@ This is the most popular function in this module. It's usually used as a control
 ### Example
 
 ```javascript
+var async = require('artillery-async');
+
 async.series([
   function(cb) {
     fs.exists(path, cb);
@@ -86,6 +94,8 @@ Runs each function in `steps` in parallel. When all steps have finished, `callba
 #### Example
 
 ```javascript
+var async = require('artillery-async');
+
 app.get('/home', function(req, res) {
   var result = {};
   async.parallel([
@@ -125,11 +135,15 @@ Repeatedly calls `iterator` while the return value of `condition` is true or `it
 #### Example
 
 ```javascript
+var async = require('artillery-async');
 var i = 0;
+
 function cond() { return i <= 20; }
+
 function iter(cb) {
   db.items.insert({ id: i++ }, cb);
 }
+
 async.while(cond, iter, function(err) {
   if (err) {
     console.error('Insert failed:', err);
@@ -147,6 +161,8 @@ async.while(cond, iter, function(err) {
 Calls `iterator` with each item in `items` in serial, finally calling `callback` at the end. If the `iterator` function calls its callback with an error, no more items are processed and `callback` is called with the error.
 
 ```javascript
+var async = require('artillery-async');
+
 async.forEachSeries(
   filesToRemove,
   function(filename, cb) {
@@ -178,15 +194,20 @@ Calls `iterator` with each item in `items` in parallel and calls `callback` when
 #### Example
 
 ```javascript
+var async = require('artillery-async');
+
 async.forEachParallel(
   filesToUpload,
+
   MAX_UPLOAD_CONCURRENCY, // 10 or so
+
   function(filename, cb) {
     fs.readFile(filename, function(err, contents) {
       if (err) return cb(err);
       s3.putObject({ Key: filename, Body: contents }, cb);
     });
   },
+
   function(err, code) {
     if (err) {
       console.error('Error:', err);
