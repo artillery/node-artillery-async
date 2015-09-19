@@ -58,7 +58,7 @@ Runs each function in `steps` serially passing any callback arguments to the nex
 
 This is the most popular function in this module. It's usually used as a control flow mechanism — the cascading arguments aren't used that often but the technique can come in handy.
 
-### Example
+#### Example
 
 ```javascript
 var async = require('artillery-async');
