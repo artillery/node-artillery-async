@@ -30,7 +30,7 @@ Install using `npm install artillery-async`
 - `count` Number
 - `callback` Function(err)
 
-Returns a function that executes `callback` after being called `count` times. The returned function takes no arguments. It's a like [parallel()][#asyncparallelsteps-callback] but makes code simpler, especially when you don't need to keep track of errors.
+Returns a function that executes `callback` after being called `count` times. The returned function takes no arguments. It's like [parallel()](#asyncparallelsteps-callback) but makes code simpler, especially when you don't need to keep track of errors.
 
 #### Example
 
