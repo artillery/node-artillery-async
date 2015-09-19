@@ -1,19 +1,19 @@
-# artillery-async
+# ArtilleryAsync
 
 [![Build Status](https://img.shields.io/circleci/project/artillery/node-artillery-async.svg)](https://circleci.com/gh/artillery/node-artillery-async)
 [![Coverage Status](https://coveralls.io/repos/artillery/node-artillery-async/badge.svg?branch=master&service=github)](https://coveralls.io/github/artillery/node-artillery-async?branch=master)
-[![License](https://img.shields.io/github/license/artillery/node-artillery-async.svg)](https://github.com/artillery/node-artillery-async/blob/master/LICENSE)
 [![Issues](https://img.shields.io/github/issues/artillery/node-artillery-async.svg)](https://github.com/artillery/node-artillery-async/issues)
+[![License](https://img.shields.io/github/license/artillery/node-artillery-async.svg)](https://github.com/artillery/node-artillery-async/blob/master/LICENSE)
 
 Common patterns for writing asynchronous code.
 
 Install using `npm install artillery-async` or `bower install artillery-async`
 
-## Why artillery-async instead of async?
+### Why ArtilleryAsync instead of [Async.js](https://github.com/caolan/async#readme)?
 
-- **async's API is difficult.** By comparison, artillery-async is only six functions. They're all we've needed after four years and tens of thousands of lines of JavaScript.
-- **async is inconsistent.** async sometimes callbacks are executed synchronously. artillery-async does things synchronously when possible. Yes, this means you might overflow the call stack more easily, this provides the freedom to add `process.nextTick()` or `setImmediate()` only when you need it.
-- **async's implementation is unweildly.** We had a lot of difficulty when debugging async -- there's a lot of code and a lot of misdirection. artillery-async is just over 100 lines of code.
+- **Async's API is difficult.** Async provides 60+ oddly-named functions with overlapping functionality. ArtilleryAsync is six functions and that's all we've needed after writing 100,000+ lines of JavaScript over four years.
+- **Async is inconsistent.** Sometimes Async calls callbacks synchronously and sometimes it doesn't. ArtilleryAsync does things synchronously when possible. Yes, this means you might overflow the call stack, but ArtilleryAsync provides the _choice_ of when to use `process.nextTick()` or `setImmediate()`.
+- **Async's implementation is unwieldily.** We had a lot of difficulty when we tried to debug async. ArtilleryAsync's implementation is only 105 lines of CoffeeScript.
 
 ## Contents
 
@@ -30,7 +30,7 @@ Install using `npm install artillery-async` or `bower install artillery-async`
 - `count` Number
 - `callback` Function(err)
 
-Returns a function that executes `callback` after being called `count` times. The returned function takes no arguments. It's a like [parallel()][#parallel] but makes code simpler, especially when you don't need to keep track of errors.
+Returns a function that executes `callback` after being called `count` times. The returned function takes no arguments. It's a like [parallel()][#asyncparallelsteps-callback] but makes code simpler, especially when you don't need to keep track of errors.
 
 #### Example
 
@@ -54,9 +54,9 @@ function loadDependencies(deps, cb) {
 - `steps` Array of Function([args...,] callback)
 - `callback` Function(err[, args...])
 
-Runs each function in `steps` serially, passing any callback arguments to the next function. (This is like async's `series()` and `waterfall()`.) When the last step has finished, `callback` is executed. If any step calls its callback with an error, the final `callback` is executed immediately with that error and no further steps are run.
+Runs each function in `steps` serially passing any callback arguments to the next function. When the last step has finished, `callback` is executed. If any step calls its callback with an error, the final `callback` is executed immediately with that error and no further steps are run.
 
-This is the most popular function in this module. It's usually used as a control flow mechanism and to the cascading arguments aren't used that often but the technique can come in handy.
+This is the most popular function in this module. It's usually used as a control flow mechanism — the cascading arguments aren't used that often but the technique can come in handy.
 
 ### Example
 
@@ -130,7 +130,7 @@ app.get('/home', function(req, res) {
 - `iterator` Function(callback)
 - `callback` Function(err)
 
-Repeatedly calls `iterator` while the return value of `condition` is true or `iterator` calls its callback with and error, then `callback` is called, possibly with an error if `iterator` produced one.
+Repeatedly calls `iterator` while the return value of `condition` is true or `iterator` calls its callback with and error. Then `callback` is called, possibly with an error if `iterator` produced one.
 
 #### Example
 
