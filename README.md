@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/circleci/project/artillery/node-artillery-async.svg)](https://circleci.com/gh/artillery/node-artillery-async)
 [![Coverage Status](https://coveralls.io/repos/artillery/node-artillery-async/badge.svg?branch=master&service=github)](https://coveralls.io/github/artillery/node-artillery-async?branch=master)
 [![Issues](https://img.shields.io/github/issues/artillery/node-artillery-async.svg)](https://github.com/artillery/node-artillery-async/issues)
+[![Dependencies](https://img.shields.io/gemnasium/artillery/node-artillery-async.svg)](https://gemnasium.com/artillery/node-artillery-async)
 [![License](https://img.shields.io/github/license/artillery/node-artillery-async.svg)](https://github.com/artillery/node-artillery-async/blob/master/LICENSE)
 
 Common patterns for writing asynchronous code.
