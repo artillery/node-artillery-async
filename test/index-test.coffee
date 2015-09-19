@@ -1,6 +1,6 @@
 #!/usr/bin/env coffee
 
-async = require '../lib/index'
+async = if process.env.ARTILLERY_ASYNC_COVERAGE then require '../lib-cov/index' else require '../lib/index'
 
 defer = (fn) -> setTimeout fn, 0 # setImmediate not in Node v0.8
 

@@ -1,5 +1,8 @@
 # artillery-async
 
+[![Build Status](https://img.shields.io/circleci/project/artillery/node-artillery-async.svg)](https://circleci.com/gh/artillery/node-artillery-async)
+[![Coverage Status](https://coveralls.io/repos/artillery/node-artillery-async/badge.svg?branch=master&service=github)](https://coveralls.io/github/artillery/node-artillery-async?branch=master)
+
 Common patterns for writing asynchronous code.
 
 ## Why artillery-async instead of async?

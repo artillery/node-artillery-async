@@ -20,11 +20,14 @@
   "dependencies": {},
   "devDependencies": {
     "coffee-script": "*",
+    "coveralls": "^2.11.4",
+    "jscoverage": "^0.6.0",
     "nodeunit": "*"
   },
   "scripts": {
     "make": "coffee --compile --output lib src/index.coffee",
     "watch": "coffee --watch --compile --output lib src/index.coffee",
-    "test": "nodeunit test"
+    "test": "nodeunit test",
+    "coveralls": "jscoverage lib && ARTILLERY_ASYNC_COVERAGE=1 nodeunit --reporter=lcov test | coveralls"
   }
 }
