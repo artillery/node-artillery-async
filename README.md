@@ -7,7 +7,7 @@
 
 Common patterns for writing asynchronous code.
 
-Install using `npm install artillery-async` or `bower install artillery-async`
+Install using `npm install artillery-async`
 
 ### Why ArtilleryAsync instead of [Async.js](https://github.com/caolan/async#readme)?
 
