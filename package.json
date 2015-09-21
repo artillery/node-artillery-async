@@ -7,7 +7,7 @@
     "utility",
     "module"
   ],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/artillery/node-artillery-async",
   "bugs": "https://github.com/artillery/node-artillery-async/issues",
   "repository": {
